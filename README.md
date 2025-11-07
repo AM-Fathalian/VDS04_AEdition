@@ -9,27 +9,11 @@
 
 
 
-<!-- PROJECT SHIELDS -->
-<!--
-*** I'm using markdown "reference style" links for readability.
-*** Reference links are enclosed in brackets [ ] instead of parentheses ( ).
-*** See the bottom of this document for the declaration of the reference variables
-*** for contributors-url, forks-url, etc. This is an optional, concise syntax you may use.
-*** https://www.markdownguide.org/basic-syntax/#reference-style-links
--->
-[![Contributors][contributors-shield]][contributors-url]
-[![Stargazers][stars-shield]][stars-url]
-[![Issues][issues-shield]][issues-url]
-<!--
-[![MIT License][license-shield]][license-url]
-[![LinkedIn][linkedin-shield]][linkedin-url]
--->
-
 
 <!-- PROJECT LOGO -->
 <br />
 <div align="center">
-  <a href="https://github.com/TUK-EIS/VDSProject">
+  <a href="https://github.com/RPTU-EIS/">
     <img src="doc/figures/RPTU-Logo-RGB.png" alt="Logo" width="400" height="200">
   </a>
   <h3 align="center">
@@ -37,14 +21,13 @@
   <br />
   Group #X
   <br />
-  Winter Semester 2022/2023
+  Winter Semester 2025/2026
   </h3>
 
   <p align="center">
     GitHub repository for the Verification of Digital Systems Class Project
     <br />
     <br />
-    <a href="https://github.com/TUK-EIS/VDSProject/issues">Report Bug</a>
   </p>
 </div>
 
@@ -89,7 +72,7 @@ Main tasks in this part:
 * Set up and maintain a Git repository
 * Use CMake as a build system of the project
 * Verify the code using GTest
-* Set up a Continuous Integration (CI) pipeline with GitHub Actions **(Mandatory)**
+* Set up a Continuous Integration (CI) pipeline **(Mandatory)**
 * Use Doxygen (or a similar tool) to generate documentation for the API. _(Optional)_
 <p align="right">(<a href="#top">back to top</a>)</p>
 
@@ -130,7 +113,7 @@ Use the `BLANK_README.md` to get started.
 
 <!-- GETTING STARTED -->
 ## Getting Started
-Fork this repository and follow the instructions given in doc/ to complete the project.
+Check out doc/VDSCP_Part_1.pdf
 <!--
 This is an example of how you may give instructions on setting up your project locally.
 To get a local copy up and running follow these simple example steps.
@@ -154,28 +137,26 @@ This is an example of how to list things you need to use the software and how to
 <p align="right">(<a href="#top">back to top</a>)</p>
 
 ### Installation
-1. Clone the repo
-   ```sh
-   git clone https://github.com/your_username_/VDSProject
-   ```
+
+
 **Installation with CLion**
 
 CLion comes with CMake. 
-2. Open CLion and open VDSProject/CMakeLists.txt as a project.
-3. Select your target and build the project.
+1. Open CLion and open VDSProject/CMakeLists.txt as a project.
+2. Select your target and build the project.
    
 **Installation without CLion**
 
 
-2. Navigate to the project folder and create a build directory
+1. Navigate to the project folder and create a build directory
     ```sh
     cd VDSProject && mkdir build
     ```
-3. Navigate to the build folder and invoke CMake
+2. Navigate to the build folder and invoke CMake
     ```sh
     cd build && cmake ../
     ```
-4. Invoke make
+3. Invoke make
     ```sh
     make
     ```   
@@ -256,20 +237,4 @@ You might find helpful links below.
 <p align="right">(<a href="#top">back to top</a>)</p>
 
 
-<!-- MARKDOWN LINKS & IMAGES -->
-<!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
-[contributors-shield]: https://img.shields.io/github/contributors/TUK-EIS/VDSProject.svg?style=for-the-badge
-[contributors-url]: https://github.com/TUK-EIS/VDSProject/graphs/contributors
-[forks-shield]: https://img.shields.io/github/forks/TUK-EIS/VDSProject.svg?style=for-the-badge
-[forks-url]: https://github.com/TUK-EIS/VDSProject/network/members
-[stars-shield]: https://img.shields.io/github/stars/TUK-EIS/VDSProject.svg?style=for-the-badge
-[stars-url]: https://github.com/TUK-EIS/VDSProject/stargazers
-[issues-shield]: https://img.shields.io/github/issues/TUK-EIS/VDSProject.svg?style=for-the-badge
-[issues-url]: https://github.com/TUK-EIS/VDSProject/issues
-<!--
-[license-shield]: https://img.shields.io/github/license/othneildrew/Best-README-Template.svg?style=for-the-badge
-[license-url]: https://github.com/othneildrew/Best-README-Template/blob/master/LICENSE.txt
-[linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
-[linkedin-url]: https://linkedin.com/in/othneildrew
--->
-[product-screenshot]: images/screenshot.png
+
