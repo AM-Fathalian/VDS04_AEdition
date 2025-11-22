@@ -47,6 +47,12 @@ link_directories(${CMAKE_SOURCE_DIR}/src/bench/)
 include_directories(${CMAKE_SOURCE_DIR}/src/verify/)
 link_directories(${CMAKE_SOURCE_DIR}/src/verify/)
 
+
 add_subdirectory(src)
+
+# Example snippet for src/CMakeLists.txt
+add_executable(run_tests src/test/main_test.cpp) #
+target_link_libraries(run_tests GTest::gtest_main Manager) # Link against GTest and your BDD Manager library
+
 add_executable(VDSProject src/main.cpp)
 target_link_libraries(VDSProject Manager)
