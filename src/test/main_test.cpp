@@ -126,7 +126,13 @@ TEST_F(ManagerTest, TopVariable_Label) {
 }
 
 //Test COFActors
-
+// TEST_F(ManagerTest, CoFactor_True) {
+//     BDD_ID first_var = manager.createVar("a");
+//     BDD_ID second_var = manager.createVar("b");
+//
+//
+//
+// }
 
 
 //Test ite
