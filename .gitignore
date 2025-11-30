@@ -1,4 +1,5 @@
 gtest/
 ci-status.sh
 job-*.log
+*.xml
 *.swp

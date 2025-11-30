@@ -84,8 +84,8 @@ TEST_F(ManagerTest, TopVariable_ID) {
     BDD_ID first_var = manager.createVar("a");
     BDD_ID second_var = manager.createVar("b");
 
-    EXPECT_EQ(manager.topVar("a"), first_var) << "TopVar ID of a 'simple' variable must be its own ID";
-    EXPECT_EQ(manager.topVar("b"), second_var) << "TopVar ID of a 'simple' variable must be its own ID";
+    EXPECT_EQ(manager.topVar(first_var), first_var) << "TopVar ID of a 'simple' variable must be its own ID";
+    EXPECT_EQ(manager.topVar(second_var), second_var) << "TopVar ID of a 'simple' variable must be its own ID";
 
 
     EXPECT_EQ(manager.topVar(FALSE_ID), FALSE_ID) << "TopVar ID of the constant False, must be 0";

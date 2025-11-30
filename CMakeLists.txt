@@ -1,42 +1,58 @@
-cmake_minimum_required(VERSION 3.14)
-project(VDSProject)
+cmake_minimum_required(VERSION 3.10)
+project(VDSProject CXX C)
+set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -fPIC -std=c++17 ${LLVM_CXX_FLAGS} ")
 
-set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-# --- 1. Automatic GTest Download (Modern Method) ---
-include(FetchContent)
-FetchContent_Declare(
-        googletest
-        URL https://github.com/google/googletest/archive/refs/tags/release-1.12.1.zip
-)
-# Prevent GTest from overriding your compiler settings (Windows/Linux safety)
-set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
-FetchContent_MakeAvailable(googletest)
+# Download and unpack googletest at configure time
+configure_file(CMakeLists.txt.in ${CMAKE_SOURCE_DIR}/gtest/googletest-download/CMakeLists.txt)
+execute_process(COMMAND ${CMAKE_COMMAND} -G "${CMAKE_GENERATOR}" .
+        RESULT_VARIABLE result
+        WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/gtest/googletest-download )
+if(result)
+    message(FATAL_ERROR "CMake step for googletest failed: ${result}")
+endif()
+execute_process(COMMAND ${CMAKE_COMMAND} --build .
+        RESULT_VARIABLE result
+        WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/gtest/googletest-download )
+if(result)
+    message(FATAL_ERROR "Build step for googletest failed: ${result}")
+endif()
 
-# --- 2. Include Directories ---
-# This allows you to include "Manager.h" anywhere
-include_directories(src)
+# Add googletest directly to our build. This defines
+# the gtest and gtest_main targets.
+add_subdirectory(${CMAKE_SOURCE_DIR}/gtest/googletest-src
+        ${CMAKE_SOURCE_DIR}/gtest/googletest-build
+        EXCLUDE_FROM_ALL)
 
-# --- 3. Define Sources ---
-set(SOURCE_FILES
-        src/Manager.cpp
-        src/Manager.h
-        src/ManagerInterface.h
-)
+# The gtest/gtest_main targets carry header search path
+# dependencies automatically when using CMake 2.8.11 or
+# later. Otherwise we have to add them here ourselves.
+if (CMAKE_VERSION VERSION_LESS 2.8.11)
+    include_directories("${gtest_SOURCE_DIR}/include")
+endif()
 
-# --- 4. Define Executables ---
+#Include dirs
+include_directories(${CMAKE_SOURCE_DIR}/lib)
+link_directories(${CMAKE_SOURCE_DIR}/lib)
 
-# A. The Main App (For your manual checks)
-add_executable(VDSProject_Run src/main.cpp ${SOURCE_FILES})
+include_directories(${CMAKE_SOURCE_DIR}/src)
+link_directories(${CMAKE_SOURCE_DIR}/src)
 
-# B. The Test App (For CI and GTest)
-enable_testing()
-add_executable(VDSProject_Test src/test/main_test.cpp ${SOURCE_FILES})
+include_directories(${CMAKE_SOURCE_DIR}/src/test/)
+link_directories(${CMAKE_SOURCE_DIR}/src/test/)
 
-# Link GTest to the test executable
-target_link_libraries(VDSProject_Test gtest_main)
+include_directories(${CMAKE_SOURCE_DIR}/src/bench/)
+link_directories(${CMAKE_SOURCE_DIR}/src/bench/)
 
-# Register tests so CLion sees them
-include(GoogleTest)
-gtest_discover_tests(VDSProject_Test)
+include_directories(${CMAKE_SOURCE_DIR}/src/verify/)
+link_directories(${CMAKE_SOURCE_DIR}/src/verify/)
+
+
+add_subdirectory(src)
+
+# Example snippet for src/CMakeLists.txt
+add_executable(run_tests src/test/main_test.cpp) #
+target_link_libraries(run_tests GTest::gtest_main Manager) # Link against GTest and your BDD Manager library
+
+add_executable(VDSProject src/main.cpp)
+target_link_libraries(VDSProject Manager)
