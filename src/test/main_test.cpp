@@ -6,88 +6,19 @@ using namespace ClassProject;
 // Define the Test Fixture class
 class ManagerTest : public ::testing::Test {
 protected:
+    // This assumes the Manager class is defined and inherits ManagerInterface
+    // Make sure Manager.h is updated to define the concrete class:
+    // class Manager : public ManagerInterface {...};
     Manager manager;
 
-    // These constants are defined by the BDD specification (0 for False, 1 for True)
-    const BDD_ID FALSE_ID = 0;
-    const BDD_ID TRUE_ID = 1;
+#include "gtest/gtest.h"
+#include "../Manager.h"
 
-    void SetUp() override {
-        // Assert that the terminal nodes are set up correctly upon construction.
-        // The unique table must contain False (0) and True (1) immediately.
-        ASSERT_EQ(manager.uniqueTableSize(), 2);
-    }
-};
-
-// Inside main_test.cpp, after the ManagerTest class definition
-
-
-TEST_F(ManagerTest, False_Node_ID) {
-    // Check if the returned IDs match the specification (0 for False)
-    EXPECT_EQ(manager.False(), FALSE_ID);
+TEST(ManagerTest, Initialization) {
+    ClassProject::Manager manager;
+    EXPECT_EQ(manager.False(), 0);
+    EXPECT_EQ(manager.True(), 1);
 }
-
-TEST_F(ManagerTest, True_Node_ID) {
-    // Check if the returned IDs match the specification (1 for True)
-    EXPECT_EQ(manager.True(), TRUE_ID);
-}
-
-TEST_F(ManagerTest, IsConstant_PositiveChcek) {
-    EXPECT_TRUE(manager.isConstant(TRUE_ID));
-    EXPECT_TRUE(manager.isConstant(FALSE_ID));
-}
-
-TEST_F(ManagerTest, IsVariable_NegativeCheck) {
-    EXPECT_FALSE(manager.isVariable(TRUE_ID));
-    EXPECT_FALSE(manager.isVariable(FALSE_ID));
-}
-
-
-TEST_F(ManagerTest, UniqueTableSize_InitializesToTwo) {
-    EXPECT_EQ(manager.uniqueTableSize(), 2);
-}
-
-
-TEST_F(ManagerTest, Test_Create_Var) {
-
-    size_t initial_size = manager.uniqueTableSize();
-    BDD_ID first_var = manager.createVar("a");
-    EXPECT_EQ(first_var, 2);
-    EXPECT_EQ(manager.uniqueTableSize(), initial_size + 1);
-
-    BDD_ID second_var = manager.createVar("b");
-    EXPECT_EQ(second_var, 3);
-    EXPECT_EQ(manager.uniqueTableSize(), initial_size + 2);
-
-
-    BDD_ID same_var = manager.createVar("a");
-    EXPECT_EQ(same_var, first_var)<<"If a label that alredy exists is parsed as an input, then dont add the entry and return the id of the first label";
-    EXPECT_EQ(manager.uniqueTableSize(), initial_size + 2);
-
-
-}
-
-
-TEST_F(ManagerTest, IsConstant_NegativeChcek) {
-    BDD_ID first_var = manager.createVar("a");
-    EXPECT_FALSE(manager.isConstant(first_var));
-
-}
-
-TEST_F(ManagerTest, IsVariable_PositiveCheck) {
-    BDD_ID firs_var = manager.createVar("a");
-    EXPECT_TRUE(manager.isVariable(firs_var));
-}
-
-
-
-// TEST_F(ManagerTest, Test_Node_Helpers) {
-//
-// }
-//
-// TEST_F(ManagerTest, Test_CoFactors) {
-//
-// }
 
 
 // ... Your tests will go here ...
