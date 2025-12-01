@@ -54,5 +54,8 @@ add_subdirectory(src)
 add_executable(run_tests src/test/main_test.cpp) #
 target_link_libraries(run_tests GTest::gtest_main Manager) # Link against GTest and your BDD Manager library
 
+enable_testing()
+add_test(NAME VDSProject_Test COMMAND run_tests)
+
 add_executable(VDSProject src/main.cpp)
 target_link_libraries(VDSProject Manager)
