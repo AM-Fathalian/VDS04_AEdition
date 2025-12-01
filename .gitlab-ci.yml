@@ -7,7 +7,6 @@ stages:
 compile_and_run:
   stage: build_and_test
 
-  # FIX: Install CMake before doing anything else
   before_script:
     - apt-get update && apt-get install -y cmake
 
@@ -20,9 +19,7 @@ compile_and_run:
     - cmake ..
 
     - echo "Compiling..."
-    # Matches the executable name defined in CMakeLists.txt above
-    - make VDSProject_Test
+    - make run_tests
 
     - echo "Running unit tests..."
-    # Matches the executable name defined in CMakeLists.txt above
-    - ./VDSProject_Test
+    - ./run_tests
