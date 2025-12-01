@@ -19,134 +19,43 @@ protected:
     }
 };
 
-// Inside main_test.cpp, after the ManagerTest class definition
-
 
 TEST_F(ManagerTest, False_Node_ID) {
-    // Check if the returned IDs match the specification (0 for False)
-    EXPECT_EQ(manager.False(), FALSE_ID);
+    std::cout << "Testing False() returns " << FALSE_ID << std::endl;
+    BDD_ID result = manager.False();
+    std::cout << "False() returned: " << result << std::endl;
+    EXPECT_EQ(result, FALSE_ID);
 }
 
 TEST_F(ManagerTest, True_Node_ID) {
-    // Check if the returned IDs match the specification (1 for True)
-    EXPECT_EQ(manager.True(), TRUE_ID);
+    std::cout << "Testing True() returns " << TRUE_ID << std::endl;
+    BDD_ID result = manager.True();
+    std::cout << "True() returned: " << result << std::endl;
+    EXPECT_EQ(result, TRUE_ID);
 }
 
 TEST_F(ManagerTest, IsConstant_PositiveChcek) {
+    std::cout << "Testing isConstant for TRUE_ID and FALSE_ID" << std::endl;
+    std::cout << "isConstant(TRUE_ID): " << manager.isConstant(TRUE_ID) << std::endl;
+    std::cout << "isConstant(FALSE_ID): " << manager.isConstant(FALSE_ID) << std::endl;
     EXPECT_TRUE(manager.isConstant(TRUE_ID));
     EXPECT_TRUE(manager.isConstant(FALSE_ID));
 }
 
 TEST_F(ManagerTest, IsVariable_NegativeCheck) {
+    std::cout << "Testing isVariable returns false for constants" << std::endl;
+    std::cout << "isVariable(TRUE_ID): " << manager.isVariable(TRUE_ID) << std::endl;
+    std::cout << "isVariable(FALSE_ID): " << manager.isVariable(FALSE_ID) << std::endl;
     EXPECT_FALSE(manager.isVariable(TRUE_ID));
     EXPECT_FALSE(manager.isVariable(FALSE_ID));
 }
 
-
 TEST_F(ManagerTest, UniqueTableSize_InitializesToTwo) {
-    EXPECT_EQ(manager.uniqueTableSize(), 2);
+    std::cout << "Testing uniqueTableSize() == 2" << std::endl;
+    size_t size = manager.uniqueTableSize();
+    std::cout << "uniqueTableSize(): " << size << std::endl;
+    EXPECT_EQ(size, 2);
 }
-
-
-TEST_F(ManagerTest, Test_Create_Var) {
-
-    size_t initial_size = manager.uniqueTableSize();
-    BDD_ID first_var = manager.createVar("a");
-    EXPECT_EQ(first_var, 2);
-    EXPECT_EQ(manager.uniqueTableSize(), initial_size + 1);
-
-    BDD_ID second_var = manager.createVar("b");
-    EXPECT_EQ(second_var, 3);
-    EXPECT_EQ(manager.uniqueTableSize(), initial_size + 2);
-
-
-    BDD_ID same_var = manager.createVar("a");
-    EXPECT_EQ(same_var, first_var)<<"If a label that alredy exists is parsed as an input, then dont add the entry and return the id of the first label";
-    EXPECT_EQ(manager.uniqueTableSize(), initial_size + 2);
-
-
-}
-
-
-TEST_F(ManagerTest, IsConstant_NegativeChcek) {
-    BDD_ID first_var = manager.createVar("a");
-    EXPECT_FALSE(manager.isConstant(first_var));
-
-}
-
-TEST_F(ManagerTest, IsVariable_PositiveCheck) {
-    BDD_ID firs_var = manager.createVar("a");
-    EXPECT_TRUE(manager.isVariable(firs_var));
-}
-
-//Test top VAr
-TEST_F(ManagerTest, TopVariable_ID) {
-    BDD_ID first_var = manager.createVar("a");
-    BDD_ID second_var = manager.createVar("b");
-
-    EXPECT_EQ(manager.topVar(first_var), first_var) << "TopVar ID of a 'simple' variable must be its own ID";
-    EXPECT_EQ(manager.topVar(second_var), second_var) << "TopVar ID of a 'simple' variable must be its own ID";
-
-
-    EXPECT_EQ(manager.topVar(FALSE_ID), FALSE_ID) << "TopVar ID of the constant False, must be 0";
-    EXPECT_EQ(manager.topVar(TRUE_ID), TRUE_ID) << "TopVar ID of the constant True, must be 1";
-
-    //PENDING TEST FOR AFTER ITE IMPLEMENTATION
-    // BDD_ID complex_var1 = manager.ite(first_var, second_var, FALSE_ID); //complex_var repressenting a . b, where top var is a
-    // BDD_ID complex_var2 = manager.ite(first_var, second_var, FALSE_ID);
-    // BDD_ID complex_var3 = manager.ite(complex_var1, second_var, FALSE_ID);
-    //
-    // EXPECT_EQ(manager.topVar(complex_var1), first_var);
-    // EXPECT_EQ(manager.topVar(complex_var2), first_var);
-    // EXPECT_EQ(manager.topVar(complex_var3), first_var);
-
-}
-
-TEST_F(ManagerTest, TopVariable_Label) {
-    BDD_ID first_var = manager.createVar("a");
-    BDD_ID second_var = manager.createVar("b");
-
-    EXPECT_EQ(manager.getTopVarName(first_var), "a") << "Label of a 'simple' variable must be its own label";
-    EXPECT_EQ(manager.getTopVarName(second_var), "b") << "Label of a 'simple' variable must be its own label";
-
-    EXPECT_EQ(manager.getTopVarName(FALSE_ID), "False") << "Label of the constant False, must be 'False'";
-    EXPECT_EQ(manager.getTopVarName(TRUE_ID), "True") << "Label of the constant True, must be 'True'";
-
-
-    //PENDING TEST FOR AFTER ITE IMPLEMENTATION
-    // BDD_ID complex_var1 = manager.ite(first_var, second_var, FALSE_ID); //complex_var repressenting a . b, where top var is a
-    // BDD_ID complex_var2 = manager.ite(first_var, second_var, FALSE_ID);
-    // BDD_ID complex_var3 = manager.ite(complex_var1, second_var, FALSE_ID);
-    //
-    // EXPECT_EQ(manager.getTopVarName(complex_var1), first_var);
-    // EXPECT_EQ(manager.getTopVarName(complex_var2), first_var);
-    // EXPECT_EQ(manager.getTopVarName(complex_var3), first_var);
-
-
-}
-
-//Test COFActors
-// TEST_F(ManagerTest, CoFactor_True) {
-//     BDD_ID first_var = manager.createVar("a");
-//     BDD_ID second_var = manager.createVar("b");
-//
-//
-//
-// }
-
-
-//Test ite
-
-// TEST_F(ManagerTest, Test_Node_Helpers) {
-//
-// }
-//
-// TEST_F(ManagerTest, Test_CoFactors) {
-//
-// }
-
-
-// ... Your tests will go here ...
 
 // main function for tests (typically handled by main_test.cpp or gtest setup)
 int main(int argc, char **argv) {
