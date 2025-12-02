@@ -68,30 +68,30 @@ TEST_F(ManagerTest, Test_Create_Var) {
     std::cout << "Initial uniqueTableSize: " << initial_size << std::endl;
 
     //std::cout << "Creating first variable 'a'..." << std::endl;
-    BDD_ID first_var = manager.createVar("a");
-    //std::cout << "First var ID: " << first_var << std::endl;
-    EXPECT_EQ(first_var, 2);
+    BDD_ID a_id = manager.createVar("a");
+    //std::cout << "First var ID: " << a_id << std::endl;
+    EXPECT_EQ(a_id, 2);
 
     size_t size_after_first = manager.uniqueTableSize();
     std::cout << "Size after first var: " << size_after_first << std::endl;
     EXPECT_EQ(size_after_first, initial_size + 1);
 
     //std::cout << "Creating second variable 'b'..." << std::endl;
-    BDD_ID second_var = manager.createVar("b");
-    //std::cout << "Second var ID: " << second_var << std::endl;
-    EXPECT_EQ(second_var, 3);
+    BDD_ID b_id = manager.createVar("b");
+    //std::cout << "Second var ID: " << b_id << std::endl;
+    EXPECT_EQ(b_id, 3);
 
     size_t size_after_second = manager.uniqueTableSize();
     std::cout << "Size after second var: " << size_after_second << std::endl;
     EXPECT_EQ(size_after_second, initial_size + 2);
 
     //std::cout << "Creating duplicate variable 'a'..." << std::endl;
-    BDD_ID same_var = manager.createVar("a");
+    BDD_ID a_copy_id = manager.createVar("a");
     // size_t size_after_duplicate = manager.uniqueTableSize();
 
-    //std::cout << "Duplicate var ID: " << same_var << std::endl;
-    //std::cout << "Expected (first var ID): " << first_var << std::endl;
-    EXPECT_EQ(same_var, first_var) << "If a label that already exists is passed as an input, then don't add the entry and return the id of the first label";
+    //std::cout << "Duplicate var ID: " << a_copy_id << std::endl;
+    //std::cout << "Expected (first var ID): " << a_id << std::endl;
+    EXPECT_EQ(a_copy_id, a_id) << "If a label that already exists is passed as an input, then don't add the entry and return the id of the first label";
 
     size_t final_size = manager.uniqueTableSize();
     std::cout << "Final uniqueTableSize: " << final_size << std::endl;
@@ -101,33 +101,33 @@ TEST_F(ManagerTest, Test_Create_Var) {
 TEST_F(ManagerTest, IsConstant_NegativeChcek) {
     std::cout << "\n--- IsConstant_NegativeCheck ---" << std::endl;
     //std::cout << "Creating variable 'a'..." << std::endl;
-    BDD_ID first_var = manager.createVar("a");
-    //std::cout << "Variable ID: " << first_var << std::endl;
-    std::cout << "isConstant(" << first_var << "): " << manager.isConstant(first_var) << std::endl;
-    EXPECT_FALSE(manager.isConstant(first_var));
+    BDD_ID a_id = manager.createVar("a");
+    //std::cout << "Variable ID: " << a_id << std::endl;
+    std::cout << "isConstant(" << a_id << "): " << manager.isConstant(a_id) << std::endl;
+    EXPECT_FALSE(manager.isConstant(a_id));
 }
 
 TEST_F(ManagerTest, IsVariable_PositiveCheck) {
     std::cout << "\n--- IsVariable_PositiveCheck ---" << std::endl;
     //std::cout << "Creating variable 'a'..." << std::endl;
-    BDD_ID first_var = manager.createVar("a");
-    //std::cout << "Variable ID: " << first_var << std::endl;
-    std::cout << "isVariable(" << first_var << "): " << manager.isVariable(first_var) << std::endl;
-    EXPECT_TRUE(manager.isVariable(first_var));
+    BDD_ID a_id = manager.createVar("a");
+    //std::cout << "Variable ID: " << a_id << std::endl;
+    std::cout << "isVariable(" << a_id << "): " << manager.isVariable(a_id) << std::endl;
+    EXPECT_TRUE(manager.isVariable(a_id));
 }
 
 
 TEST_F(ManagerTest, TopVariable_ID) {
     std::cout << "\n--- Test_Top_Var_ID ---" << std::endl;
-    BDD_ID first_var = manager.createVar("a");
-    BDD_ID second_var = manager.createVar("b");
-    //std::cout << "Created variables: a(ID=" << first_var << "), b(ID=" << second_var << ")" << std::endl;
+    BDD_ID a_id = manager.createVar("a");
+    BDD_ID b_id = manager.createVar("b");
+    //std::cout << "Created variables: a(ID=" << a_id << "), b(ID=" << b_id << ")" << std::endl;
 
-    EXPECT_EQ(manager.topVar(first_var), first_var) << "TopVar ID of a 'simple' variable must be its own ID";
-    EXPECT_EQ(manager.topVar(second_var), second_var) << "TopVar ID of a 'simple' variable must be its own ID";
+    EXPECT_EQ(manager.topVar(a_id), a_id) << "TopVar ID of a 'simple' variable must be its own ID";
+    EXPECT_EQ(manager.topVar(b_id), b_id) << "TopVar ID of a 'simple' variable must be its own ID";
 
-    std::cout << "topVar(" << first_var << ") = " << manager.topVar(first_var)
-              << ", topVar(" << second_var << ") = " << manager.topVar(second_var) << std::endl;
+    std::cout << "topVar(" << a_id << ") = " << manager.topVar(a_id)
+              << ", topVar(" << b_id << ") = " << manager.topVar(b_id) << std::endl;
 
     EXPECT_EQ(manager.topVar(FALSE_ID), FALSE_ID) << "TopVar ID of the constant False, must be 0";
     EXPECT_EQ(manager.topVar(TRUE_ID), TRUE_ID) << "TopVar ID of the constant True, must be 1";
@@ -135,29 +135,27 @@ TEST_F(ManagerTest, TopVariable_ID) {
     std::cout << "topVar(FALSE_ID) = " << manager.topVar(FALSE_ID)
               << ", topVar(TRUE_ID) = " << manager.topVar(TRUE_ID) << std::endl;
 
-    //PENDING TEST FOR AFTER ITE IMPLEMENTATION
-    // BDD_ID complex_var1 = manager.ite(first_var, second_var, FALSE_ID); //complex_var representing a . b, where top var is a
-    // BDD_ID complex_var2 = manager.ite(first_var, second_var, FALSE_ID);
-    // BDD_ID complex_var3 = manager.ite(complex_var1, second_var, FALSE_ID);
-    //
-    // EXPECT_EQ(manager.topVar(complex_var1), first_var);
-    // EXPECT_EQ(manager.topVar(complex_var2), first_var);
-    // EXPECT_EQ(manager.topVar(complex_var3), first_var);
+
+    BDD_ID x_id = manager.ite(a_id, FALSE_ID, TRUE_ID);
+    EXPECT_EQ(manager.topVar(x_id), a_id)
+        << "TopVar of the complex node x must be set to the highest-priority variable used in its definition";
+
+
 
 }
 
 TEST_F(ManagerTest, TopVariable_Label) {
     std::cout << "\n--- Test_Top_Var_Label ---" << std::endl;
 
-    BDD_ID first_var = manager.createVar("a");
-    BDD_ID second_var = manager.createVar("b");
-    //std::cout << "Created variables: a(ID=" << first_var << "), b(ID=" << second_var << ")" << std::endl;
+    BDD_ID a_id = manager.createVar("a");
+    BDD_ID b_id = manager.createVar("b");
+    //std::cout << "Created variables: a(ID=" << a_id << "), b(ID=" << b_id << ")" << std::endl;
 
-    EXPECT_EQ(manager.getTopVarName(first_var), "a") << "Label of a 'simple' variable must be its own label";
-    EXPECT_EQ(manager.getTopVarName(second_var), "b") << "Label of a 'simple' variable must be its own label";
+    EXPECT_EQ(manager.getTopVarName(a_id), "a") << "Label of a 'simple' variable must be its own label";
+    EXPECT_EQ(manager.getTopVarName(b_id), "b") << "Label of a 'simple' variable must be its own label";
 
-    std::cout << "getTopVarName(" << first_var << ") = '" << manager.getTopVarName(first_var)
-              << "', getTopVarName(" << second_var << ") = '" << manager.getTopVarName(second_var) << "'" << std::endl;
+    std::cout << "getTopVarName(" << a_id << ") = '" << manager.getTopVarName(a_id)
+              << "', getTopVarName(" << b_id << ") = '" << manager.getTopVarName(b_id) << "'" << std::endl;
 
     EXPECT_EQ(manager.getTopVarName(FALSE_ID), "False") << "Label of the constant False, must be 'False'";
     EXPECT_EQ(manager.getTopVarName(TRUE_ID), "True") << "Label of the constant True, must be 'True'";
@@ -165,14 +163,10 @@ TEST_F(ManagerTest, TopVariable_Label) {
     std::cout << "getTopVarName(FALSE_ID) = '" << manager.getTopVarName(FALSE_ID)
               << "', getTopVarName(TRUE_ID) = '" << manager.getTopVarName(TRUE_ID) << "'" << std::endl;
 
-    //PENDING TEST FOR AFTER ITE IMPLEMENTATION
-    // BDD_ID complex_var1 = manager.ite(first_var, second_var, FALSE_ID); //complex_var representing a . b, where top var is a
-    // BDD_ID complex_var2 = manager.ite(first_var, second_var, FALSE_ID);
-    // BDD_ID complex_var3 = manager.ite(complex_var1, second_var, FALSE_ID);
-    //
-    // EXPECT_EQ(manager.getTopVarName(complex_var1), first_var);
-    // EXPECT_EQ(manager.getTopVarName(complex_var2), first_var);
-    // EXPECT_EQ(manager.getTopVarName(complex_var3), first_var);
+
+    BDD_ID x_id = manager.ite(a_id, FALSE_ID, TRUE_ID);
+    EXPECT_EQ(manager.getTopVarName(x_id), "a")
+        << "TopVarName of the complex node x must be set to the highest-priority variable used in its definition";
 
 }
 
@@ -195,6 +189,24 @@ TEST_F(ManagerTest, ITE_BaseCase) {
     BDD_ID a_id = manager.createVar("a"); // ID 2
     EXPECT_EQ(manager.ite(a_id, TRUE_ID, FALSE_ID), a_id)
         << "ITE(a, True, False) must return the ID of variable 'a' (2).";
+}
+
+
+TEST_F(ManagerTest, ComplexNode_Properties) {
+    std::cout << "\n--- Test_Complex_Nodes_Properties ---" << std::endl;
+
+    BDD_ID a_id = manager.createVar("a"); // ID 2
+
+    // This creates a new complex node (e.g., ID 4).
+    BDD_ID x_id = manager.ite(a_id, FALSE_ID, TRUE_ID);
+
+    // 1. Check ID and Size
+    EXPECT_GT(x_id, TRUE_ID) << "x must be a non-terminal ID (> 1).";
+    EXPECT_EQ(manager.uniqueTableSize(), 4) << "Unique table must increase by 1 to store the new complex node x.";
+
+    // 2. Check Classifications
+    EXPECT_FALSE(manager.isConstant(x_id)) << "x must not be a constant.";
+    EXPECT_FALSE(manager.isVariable(x_id)) << "x must not be a variable node.";
 }
 
 
