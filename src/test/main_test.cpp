@@ -85,6 +85,8 @@ TEST_F(ManagerTest, Test_Create_Var) {
 
     std::cout << "Creating duplicate variable 'a'..." << std::endl;
     BDD_ID same_var = manager.createVar("a");
+    // size_t size_after_duplicate = manager.uniqueTableSize();
+
     std::cout << "Duplicate var ID: " << same_var << std::endl;
     std::cout << "Expected (first var ID): " << first_var << std::endl;
     EXPECT_EQ(same_var, first_var) << "If a label that already exists is passed as an input, then don't add the entry and return the id of the first label";

@@ -16,8 +16,20 @@ namespace ClassProject {
     size_t Manager::uniqueTableSize() { return nodes.size(); }
 
     BDD_ID Manager::createVar(const std::string &label) {
-        return 0;
+
+        // We iterate through every node currently in the manager.
+        for (const auto &node : nodes) {
+            if (node.label == label) {
+                // If we find a match in labels, the result will be the currently existing ID:
+                return node.id;
+            }
+        }
+        // Below happens whenever we didn't find a match in the currently existing nodes' labels.
+        BDD_ID new_id = nodes.size();
+        nodes.push_back({new_id, TRUE_ID, FALSE_ID, new_id, label});
+        return new_id;
     }
+
 
     std::string Manager::getTopVarName(const BDD_ID &root) {
         return "";
