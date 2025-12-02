@@ -44,7 +44,7 @@ TEST_F(ManagerTest, IsConstant_PositiveChcek) {
 }
 
 TEST_F(ManagerTest, IsVariable_NegativeCheck) {
-    std::cout << "\n--- ITesting uniqueTableSize() == 2 ---" << std::endl;
+    std::cout << "\n--- Testing uniqueTableSize() == 2 ---" << std::endl;
     std::cout << "Testing isVariable returns false for constants" << std::endl;
     std::cout << "isVariable(TRUE_ID): " << manager.isVariable(TRUE_ID) << std::endl;
     std::cout << "isVariable(FALSE_ID): " << manager.isVariable(FALSE_ID) << std::endl;
@@ -67,30 +67,30 @@ TEST_F(ManagerTest, Test_Create_Var) {
     size_t initial_size = manager.uniqueTableSize();
     std::cout << "Initial uniqueTableSize: " << initial_size << std::endl;
 
-    std::cout << "Creating first variable 'a'..." << std::endl;
+    //std::cout << "Creating first variable 'a'..." << std::endl;
     BDD_ID first_var = manager.createVar("a");
-    std::cout << "First var ID: " << first_var << std::endl;
+    //std::cout << "First var ID: " << first_var << std::endl;
     EXPECT_EQ(first_var, 2);
 
     size_t size_after_first = manager.uniqueTableSize();
     std::cout << "Size after first var: " << size_after_first << std::endl;
     EXPECT_EQ(size_after_first, initial_size + 1);
 
-    std::cout << "Creating second variable 'b'..." << std::endl;
+    //std::cout << "Creating second variable 'b'..." << std::endl;
     BDD_ID second_var = manager.createVar("b");
-    std::cout << "Second var ID: " << second_var << std::endl;
+    //std::cout << "Second var ID: " << second_var << std::endl;
     EXPECT_EQ(second_var, 3);
 
     size_t size_after_second = manager.uniqueTableSize();
     std::cout << "Size after second var: " << size_after_second << std::endl;
     EXPECT_EQ(size_after_second, initial_size + 2);
 
-    std::cout << "Creating duplicate variable 'a'..." << std::endl;
+    //std::cout << "Creating duplicate variable 'a'..." << std::endl;
     BDD_ID same_var = manager.createVar("a");
     // size_t size_after_duplicate = manager.uniqueTableSize();
 
-    std::cout << "Duplicate var ID: " << same_var << std::endl;
-    std::cout << "Expected (first var ID): " << first_var << std::endl;
+    //std::cout << "Duplicate var ID: " << same_var << std::endl;
+    //std::cout << "Expected (first var ID): " << first_var << std::endl;
     EXPECT_EQ(same_var, first_var) << "If a label that already exists is passed as an input, then don't add the entry and return the id of the first label";
 
     size_t final_size = manager.uniqueTableSize();
@@ -100,18 +100,18 @@ TEST_F(ManagerTest, Test_Create_Var) {
 
 TEST_F(ManagerTest, IsConstant_NegativeChcek) {
     std::cout << "\n--- IsConstant_NegativeCheck ---" << std::endl;
-    std::cout << "Creating variable 'a'..." << std::endl;
+    //std::cout << "Creating variable 'a'..." << std::endl;
     BDD_ID first_var = manager.createVar("a");
-    std::cout << "Variable ID: " << first_var << std::endl;
+    //std::cout << "Variable ID: " << first_var << std::endl;
     std::cout << "isConstant(" << first_var << "): " << manager.isConstant(first_var) << std::endl;
     EXPECT_FALSE(manager.isConstant(first_var));
 }
 
 TEST_F(ManagerTest, IsVariable_PositiveCheck) {
     std::cout << "\n--- IsVariable_PositiveCheck ---" << std::endl;
-    std::cout << "Creating variable 'a'..." << std::endl;
+    //std::cout << "Creating variable 'a'..." << std::endl;
     BDD_ID first_var = manager.createVar("a");
-    std::cout << "Variable ID: " << first_var << std::endl;
+    //std::cout << "Variable ID: " << first_var << std::endl;
     std::cout << "isVariable(" << first_var << "): " << manager.isVariable(first_var) << std::endl;
     EXPECT_TRUE(manager.isVariable(first_var));
 }
@@ -121,7 +121,7 @@ TEST_F(ManagerTest, TopVariable_ID) {
     std::cout << "\n--- Test_Top_Var_ID ---" << std::endl;
     BDD_ID first_var = manager.createVar("a");
     BDD_ID second_var = manager.createVar("b");
-    std::cout << "Created variables: a(ID=" << first_var << "), b(ID=" << second_var << ")" << std::endl;
+    //std::cout << "Created variables: a(ID=" << first_var << "), b(ID=" << second_var << ")" << std::endl;
 
     EXPECT_EQ(manager.topVar(first_var), first_var) << "TopVar ID of a 'simple' variable must be its own ID";
     EXPECT_EQ(manager.topVar(second_var), second_var) << "TopVar ID of a 'simple' variable must be its own ID";
@@ -151,7 +151,7 @@ TEST_F(ManagerTest, TopVariable_Label) {
 
     BDD_ID first_var = manager.createVar("a");
     BDD_ID second_var = manager.createVar("b");
-    std::cout << "Created variables: a(ID=" << first_var << "), b(ID=" << second_var << ")" << std::endl;
+    //std::cout << "Created variables: a(ID=" << first_var << "), b(ID=" << second_var << ")" << std::endl;
 
     EXPECT_EQ(manager.getTopVarName(first_var), "a") << "Label of a 'simple' variable must be its own label";
     EXPECT_EQ(manager.getTopVarName(second_var), "b") << "Label of a 'simple' variable must be its own label";
@@ -175,6 +175,28 @@ TEST_F(ManagerTest, TopVariable_Label) {
     // EXPECT_EQ(manager.getTopVarName(complex_var3), first_var);
 
 }
+
+
+TEST_F(ManagerTest, ITE_BaseCase) {
+    std::cout << "\n--- Test_ITE ---" << std::endl;
+    std::cout << "Simple Case, no recursion" << std::endl;
+
+
+
+    EXPECT_EQ(manager.ite(TRUE_ID, FALSE_ID, FALSE_ID), FALSE_ID) << "ITE(i, t, t) should return t (False).";
+    EXPECT_EQ(manager.ite(FALSE_ID, TRUE_ID, TRUE_ID), TRUE_ID) << "ITE(i, t, t) should return t (True).";
+
+
+    EXPECT_EQ(manager.ite(TRUE_ID, FALSE_ID, TRUE_ID), FALSE_ID) << "ITE(True, t, e) should return t (False).";
+
+
+    EXPECT_EQ(manager.ite(FALSE_ID, TRUE_ID, FALSE_ID), FALSE_ID) << "ITE(False, t, e) should return e (False).";
+
+    BDD_ID a_id = manager.createVar("a"); // ID 2
+    EXPECT_EQ(manager.ite(a_id, TRUE_ID, FALSE_ID), a_id)
+        << "ITE(a, True, False) must return the ID of variable 'a' (2).";
+}
+
 
 // main function for tests (typically handled by main_test.cpp or gtest setup)
 int main(int argc, char **argv) {
