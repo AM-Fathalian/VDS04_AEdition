@@ -21,6 +21,7 @@ protected:
 
 
 TEST_F(ManagerTest, False_Node_ID) {
+    std::cout << "\n--- Testing FalseID ---" << std::endl;
     std::cout << "Testing False() returns " << FALSE_ID << std::endl;
     BDD_ID result = manager.False();
     std::cout << "False() returned: " << result << std::endl;
@@ -28,14 +29,14 @@ TEST_F(ManagerTest, False_Node_ID) {
 }
 
 TEST_F(ManagerTest, True_Node_ID) {
-    std::cout << "Testing True() returns " << TRUE_ID << std::endl;
+    std::cout << "\n--- Testing TrueID ---" << std::endl;
     BDD_ID result = manager.True();
     std::cout << "True() returned: " << result << std::endl;
     EXPECT_EQ(result, TRUE_ID);
 }
 
 TEST_F(ManagerTest, IsConstant_PositiveChcek) {
-    std::cout << "Testing isConstant for TRUE_ID and FALSE_ID" << std::endl;
+    std::cout << "\n---Testing is Constant for False and True ID ---" << std::endl;
     std::cout << "isConstant(TRUE_ID): " << manager.isConstant(TRUE_ID) << std::endl;
     std::cout << "isConstant(FALSE_ID): " << manager.isConstant(FALSE_ID) << std::endl;
     EXPECT_TRUE(manager.isConstant(TRUE_ID));
@@ -43,6 +44,7 @@ TEST_F(ManagerTest, IsConstant_PositiveChcek) {
 }
 
 TEST_F(ManagerTest, IsVariable_NegativeCheck) {
+    std::cout << "\n--- ITesting uniqueTableSize() == 2 ---" << std::endl;
     std::cout << "Testing isVariable returns false for constants" << std::endl;
     std::cout << "isVariable(TRUE_ID): " << manager.isVariable(TRUE_ID) << std::endl;
     std::cout << "isVariable(FALSE_ID): " << manager.isVariable(FALSE_ID) << std::endl;
@@ -51,7 +53,7 @@ TEST_F(ManagerTest, IsVariable_NegativeCheck) {
 }
 
 TEST_F(ManagerTest, UniqueTableSize_InitializesToTwo) {
-    std::cout << "Testing uniqueTableSize() == 2" << std::endl;
+    std::cout << "\n--- Testing uniqueTableSize() == 2 ---" << std::endl;
     size_t size = manager.uniqueTableSize();
     std::cout << "uniqueTableSize(): " << size << std::endl;
     EXPECT_EQ(size, 2);
@@ -116,8 +118,7 @@ TEST_F(ManagerTest, IsVariable_PositiveCheck) {
 
 
 TEST_F(ManagerTest, TopVariable_ID) {
-    std::cout << "Testing topVar() ID functionality" << std::endl;
-
+    std::cout << "\n--- Test_Top_Var_ID ---" << std::endl;
     BDD_ID first_var = manager.createVar("a");
     BDD_ID second_var = manager.createVar("b");
     std::cout << "Created variables: a(ID=" << first_var << "), b(ID=" << second_var << ")" << std::endl;
@@ -146,7 +147,7 @@ TEST_F(ManagerTest, TopVariable_ID) {
 }
 
 TEST_F(ManagerTest, TopVariable_Label) {
-    std::cout << "Testing getTopVarName() label functionality" << std::endl;
+    std::cout << "\n--- Test_Top_Var_Label ---" << std::endl;
 
     BDD_ID first_var = manager.createVar("a");
     BDD_ID second_var = manager.createVar("b");
