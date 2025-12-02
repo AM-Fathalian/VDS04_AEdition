@@ -12,7 +12,7 @@ namespace ClassProject {
     const BDD_ID &Manager::False() { return FALSE_ID; }
     bool Manager::isConstant(BDD_ID f) { return (f == TRUE_ID || f == FALSE_ID); }
     bool Manager::isVariable(BDD_ID x) { return (nodes[x].high == TRUE_ID && nodes[x].low == FALSE_ID); }
-    BDD_ID Manager::topVar(BDD_ID f) { return 0; }
+    BDD_ID Manager::topVar(BDD_ID f) { return nodes[f].topVar; }
     size_t Manager::uniqueTableSize() { return nodes.size(); }
 
     BDD_ID Manager::createVar(const std::string &label) {
@@ -32,7 +32,8 @@ namespace ClassProject {
 
 
     std::string Manager::getTopVarName(const BDD_ID &root) {
-        return "";
+        BDD_ID topVarId = nodes[root].topVar;
+        return nodes[topVarId].label;
     }
 
     BDD_ID Manager::ite(BDD_ID i, BDD_ID t, BDD_ID e) {
