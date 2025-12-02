@@ -114,6 +114,67 @@ TEST_F(ManagerTest, IsVariable_PositiveCheck) {
     EXPECT_TRUE(manager.isVariable(first_var));
 }
 
+
+TEST_F(ManagerTest, TopVariable_ID) {
+    std::cout << "Testing topVar() ID functionality" << std::endl;
+
+    BDD_ID first_var = manager.createVar("a");
+    BDD_ID second_var = manager.createVar("b");
+    std::cout << "Created variables: a(ID=" << first_var << "), b(ID=" << second_var << ")" << std::endl;
+
+    EXPECT_EQ(manager.topVar(first_var), first_var) << "TopVar ID of a 'simple' variable must be its own ID";
+    EXPECT_EQ(manager.topVar(second_var), second_var) << "TopVar ID of a 'simple' variable must be its own ID";
+
+    std::cout << "topVar(" << first_var << ") = " << manager.topVar(first_var)
+              << ", topVar(" << second_var << ") = " << manager.topVar(second_var) << std::endl;
+
+    EXPECT_EQ(manager.topVar(FALSE_ID), FALSE_ID) << "TopVar ID of the constant False, must be 0";
+    EXPECT_EQ(manager.topVar(TRUE_ID), TRUE_ID) << "TopVar ID of the constant True, must be 1";
+
+    std::cout << "topVar(FALSE_ID) = " << manager.topVar(FALSE_ID)
+              << ", topVar(TRUE_ID) = " << manager.topVar(TRUE_ID) << std::endl;
+
+    //PENDING TEST FOR AFTER ITE IMPLEMENTATION
+    // BDD_ID complex_var1 = manager.ite(first_var, second_var, FALSE_ID); //complex_var representing a . b, where top var is a
+    // BDD_ID complex_var2 = manager.ite(first_var, second_var, FALSE_ID);
+    // BDD_ID complex_var3 = manager.ite(complex_var1, second_var, FALSE_ID);
+    //
+    // EXPECT_EQ(manager.topVar(complex_var1), first_var);
+    // EXPECT_EQ(manager.topVar(complex_var2), first_var);
+    // EXPECT_EQ(manager.topVar(complex_var3), first_var);
+
+}
+
+TEST_F(ManagerTest, TopVariable_Label) {
+    std::cout << "Testing getTopVarName() label functionality" << std::endl;
+
+    BDD_ID first_var = manager.createVar("a");
+    BDD_ID second_var = manager.createVar("b");
+    std::cout << "Created variables: a(ID=" << first_var << "), b(ID=" << second_var << ")" << std::endl;
+
+    EXPECT_EQ(manager.getTopVarName(first_var), "a") << "Label of a 'simple' variable must be its own label";
+    EXPECT_EQ(manager.getTopVarName(second_var), "b") << "Label of a 'simple' variable must be its own label";
+
+    std::cout << "getTopVarName(" << first_var << ") = '" << manager.getTopVarName(first_var)
+              << "', getTopVarName(" << second_var << ") = '" << manager.getTopVarName(second_var) << "'" << std::endl;
+
+    EXPECT_EQ(manager.getTopVarName(FALSE_ID), "False") << "Label of the constant False, must be 'False'";
+    EXPECT_EQ(manager.getTopVarName(TRUE_ID), "True") << "Label of the constant True, must be 'True'";
+
+    std::cout << "getTopVarName(FALSE_ID) = '" << manager.getTopVarName(FALSE_ID)
+              << "', getTopVarName(TRUE_ID) = '" << manager.getTopVarName(TRUE_ID) << "'" << std::endl;
+
+    //PENDING TEST FOR AFTER ITE IMPLEMENTATION
+    // BDD_ID complex_var1 = manager.ite(first_var, second_var, FALSE_ID); //complex_var representing a . b, where top var is a
+    // BDD_ID complex_var2 = manager.ite(first_var, second_var, FALSE_ID);
+    // BDD_ID complex_var3 = manager.ite(complex_var1, second_var, FALSE_ID);
+    //
+    // EXPECT_EQ(manager.getTopVarName(complex_var1), first_var);
+    // EXPECT_EQ(manager.getTopVarName(complex_var2), first_var);
+    // EXPECT_EQ(manager.getTopVarName(complex_var3), first_var);
+
+}
+
 // main function for tests (typically handled by main_test.cpp or gtest setup)
 int main(int argc, char **argv) {
     ::testing::InitGoogleTest(&argc, argv);
