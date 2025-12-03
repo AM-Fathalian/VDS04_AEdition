@@ -136,13 +136,21 @@ TEST_F(ManagerTest, TopVariable_ID) {
               << ", topVar(TRUE_ID) = " << manager.topVar(TRUE_ID) << std::endl;
 
 
+
+
+}
+
+TEST_F(ManagerTest, TopVariable_ID_ComplexNodes) {
+    std::cout << "\n--- Test_Top_Var_ID_Complex ---" << std::endl;
+    BDD_ID a_id = manager.createVar("a");
+
     BDD_ID x_id = manager.ite(a_id, FALSE_ID, TRUE_ID);
     EXPECT_EQ(manager.topVar(x_id), a_id)
         << "TopVar of the complex node x must be set to the highest-priority variable used in its definition";
 
 
-
 }
+
 
 TEST_F(ManagerTest, TopVariable_Label) {
     std::cout << "\n--- Test_Top_Var_Label ---" << std::endl;
@@ -163,6 +171,13 @@ TEST_F(ManagerTest, TopVariable_Label) {
     std::cout << "getTopVarName(FALSE_ID) = '" << manager.getTopVarName(FALSE_ID)
               << "', getTopVarName(TRUE_ID) = '" << manager.getTopVarName(TRUE_ID) << "'" << std::endl;
 
+
+
+}
+
+TEST_F(ManagerTest, TopVariable_Label_ComplexNodes) {
+    std::cout << "\n--- Test_Top_Var_Label_Complex ---" << std::endl;
+    BDD_ID a_id = manager.createVar("a");
 
     BDD_ID x_id = manager.ite(a_id, FALSE_ID, TRUE_ID);
     EXPECT_EQ(manager.getTopVarName(x_id), "a")
