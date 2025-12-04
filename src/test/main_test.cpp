@@ -225,6 +225,98 @@ TEST_F(ManagerTest, ComplexNode_Properties) {
 }
 
 
+
+TEST_F(ManagerTest, ITE_PreventsDuplicates) {
+    std::cout << "\n--- Test_ITE_PreventDuplicates ---" << std::endl;
+
+    BDD_ID a_id = manager.createVar("a"); // ID 2
+    size_t initial_size = manager.uniqueTableSize(); // Should be 3 (0, 1, a)
+
+
+    BDD_ID x_id = manager.ite(a_id, FALSE_ID, TRUE_ID);
+
+    // Verify it was added (size is now 4)
+    EXPECT_EQ(manager.uniqueTableSize(), initial_size + 1) << "First ITE call must add the node.";
+
+    // 2. Call the exact same ITE operation again
+    BDD_ID x_copy_id = manager.ite(a_id, FALSE_ID, TRUE_ID);
+
+    // CRITICAL CHECK: The two IDs must be IDENTICAL
+    EXPECT_EQ(x_id, x_copy_id)
+        << "Second call to ITE with identical inputs must return the existing ID (canonical form).";
+
+    // CRITICAL CHECK: The size must NOT have increased
+    EXPECT_EQ(manager.uniqueTableSize(), initial_size + 1)
+        << "Unique table size must NOT increase after the second identical call.";
+}
+
+
+TEST_F(ManagerTest, ITE_Recursion) {
+    std::cout << "\n--- Test_ITE_Recursion ---" << std::endl;
+
+
+    BDD_ID a_id = manager.createVar("a");
+    BDD_ID b_id = manager.createVar("b");
+    size_t initial_size = manager.uniqueTableSize();
+
+    // The function to compute: F = a AND b = ITE(a, b, False)
+    // - High branch (a=1) = ITE(True, b, False) = b
+    // - Low branch (a=0)  = ITE(False, b, False) = False
+
+    // The resulting node should be: High=b, Low=False, TopVar=a
+    BDD_ID and_ab_id = manager.ite(a_id, b_id, FALSE_ID);
+    //BDD_ID and_ba_id = manager.ite(b_id, a_id, FALSE_ID);
+
+    // 1. Check ID and Size
+    EXPECT_EQ(and_ab_id, b_id + 1) << "The new node must have the next sequential ID (4).";
+    EXPECT_EQ(manager.uniqueTableSize(), initial_size + 1) << "Size must increase by 1 for the new complex node.";
+
+    //BDD_ID and_ba_id = manager.ite(b_id, a_id, FALSE_ID);
+
+    // 2. Check TopVar
+    //EXPECT_EQ(manager.topVar(and_ba_id), a_id) << "The top variable must be the highest priority variable.";
+
+    //REMEMBER: CHECK SPECIAL CASE IF LOW==HIGH, then return the child instead of creating a new node
+    //Node: var = x3, low = N5, high = N5
+    //ASK ABOUT HIDDEN REDUCTION
+}
+
+
+// --- Phase 3: Test Case 7 (Hidden Reduction) ---
+TEST_F(ManagerTest, ITE_Reduction_ReturnsHighIfHighEqualsLow) {
+    std::cout << "\n--- Test_Hidden_Reduction (LOW==HIGH) ---" << std::endl;
+    BDD_ID a_id = manager.createVar("a");
+    BDD_ID b_id = manager.createVar("b");
+
+    // Check reduction with a simple variable 'b'
+    BDD_ID result_id = manager.ite(a_id, b_id, b_id);
+
+    // CRITICAL CHECK: Must return 'b's ID, not a new node ID.
+    EXPECT_EQ(result_id, b_id) << "ITE(i, t, t) must return t, even if i is a variable.";
+
+    // Check that no new node was created (size must be 4: 0, 1, a, b)
+    EXPECT_EQ(manager.uniqueTableSize(), 4) << "Unique table size must not increase due to reduction.";
+}
+
+// --- Phase 3: Test Case 8 (Ordering Check) ---
+TEST_F(ManagerTest, ITE_Ordering_SplitsOnHighestPriorityVar) {
+    std::cout << "\n--- Test_Ordering_Splits_On_Highest_Priority_Var ---" << std::endl;
+
+    // Test: F = ITE(b, a, False). The function is actually a AND b.
+    // The implementation must internally split on 'a' (the top var).
+    BDD_ID a_id = manager.createVar("a");
+    BDD_ID b_id = manager.createVar("b");
+    // 1. Compute the simple AND operation for comparison
+    BDD_ID and_ab_id = manager.ite(a_id, b_id, FALSE_ID);
+
+    // 2. Compute the operation that attempts to violate the order
+    BDD_ID reverse_ite_id = manager.ite(b_id, a_id, FALSE_ID);
+
+    // CRITICAL CHECK: Due to the canonical BDD rules, the results must be identical.
+    EXPECT_EQ(reverse_ite_id, and_ab_id)
+        << "Result must match the canonical form, proving the manager split on 'a' first, not 'b'.";
+}
+
 // main function for tests (typically handled by main_test.cpp or gtest setup)
 int main(int argc, char **argv) {
     ::testing::InitGoogleTest(&argc, argv);
