@@ -282,7 +282,6 @@ TEST_F(ManagerTest, ITE_Recursion) {
 }
 
 
-// --- Phase 3: Test Case 7 (Hidden Reduction) ---
 TEST_F(ManagerTest, ITE_Reduction_ReturnsHighIfHighEqualsLow) {
     std::cout << "\n--- Test_Hidden_Reduction (LOW==HIGH) ---" << std::endl;
     BDD_ID a_id = manager.createVar("a");
@@ -298,7 +297,7 @@ TEST_F(ManagerTest, ITE_Reduction_ReturnsHighIfHighEqualsLow) {
     EXPECT_EQ(manager.uniqueTableSize(), 4) << "Unique table size must not increase due to reduction.";
 }
 
-// --- Phase 3: Test Case 8 (Ordering Check) ---
+
 TEST_F(ManagerTest, ITE_Ordering_SplitsOnHighestPriorityVar) {
     std::cout << "\n--- Test_Ordering_Splits_On_Highest_Priority_Var ---" << std::endl;
 
@@ -315,6 +314,59 @@ TEST_F(ManagerTest, ITE_Ordering_SplitsOnHighestPriorityVar) {
     // CRITICAL CHECK: Due to the canonical BDD rules, the results must be identical.
     EXPECT_EQ(reverse_ite_id, and_ab_id)
         << "Result must match the canonical form, proving the manager split on 'a' first, not 'b'.";
+}
+
+
+
+TEST_F(ManagerTest, NOT) {
+    std::cout << "\n--- Test_NOT ---" << std::endl;
+    // SETUP: Create a variable 'a'
+    BDD_ID a_id = manager.createVar("a");
+
+    // 1. Check Trivial Negations (Constants)
+    EXPECT_EQ(manager.neg(TRUE_ID), FALSE_ID) << "NOT(True) must be False (0).";
+    EXPECT_EQ(manager.neg(FALSE_ID), TRUE_ID) << "NOT(False) must be True (1).";
+
+    // 2. Check Variable Negation
+    BDD_ID not_a_id = manager.neg(a_id);
+
+    // The result should match the canonical NOT(a) node created earlier by ITE.
+    BDD_ID canonical_not_a = manager.ite(a_id, FALSE_ID, TRUE_ID);
+
+    // CRITICAL CHECK: The ID returned by neg must match the canonical ITE result.
+    EXPECT_EQ(not_a_id, canonical_not_a)
+        << "Negation result must match the canonical ITE(a, False, True) node.";
+
+    // 3. Check Double Negation (Idempotence)
+    EXPECT_EQ(manager.neg(not_a_id), a_id) << "NOT(NOT(a)) must return 'a' (Idempotence).";
+}
+
+
+
+TEST_F(ManagerTest, AND2) {
+    std::cout << "\n--- Test_AND2 ---" << std::endl;
+    // SETUP: Create two variables
+    BDD_ID a_id = manager.createVar("a"); // ID 2
+    BDD_ID b_id = manager.createVar("b"); // ID 3
+
+    // 1. Check Trivial AND (Constants)
+    EXPECT_EQ(manager.and2(TRUE_ID, FALSE_ID), FALSE_ID) << "True AND False must be False.";
+    EXPECT_EQ(manager.and2(TRUE_ID, TRUE_ID), TRUE_ID) << "True AND True must be True.";
+    EXPECT_EQ(manager.and2(FALSE_ID, TRUE_ID), FALSE_ID) << "False AND True must be False.";
+    EXPECT_EQ(manager.and2(FALSE_ID, FALSE_ID), FALSE_ID) << "False AND False must be False.";
+
+    // 2. Check AND with itself (Idempotence)
+    EXPECT_EQ(manager.and2(a_id, a_id), a_id) << "a AND a must be a.";
+
+    // 3. Check Variable AND
+    BDD_ID and_ab_id = manager.and2(a_id, b_id);
+
+    // The result should match the canonical AND(a, b) node created earlier by ITE.
+    BDD_ID canonical_and_ab = manager.ite(a_id, b_id, FALSE_ID);
+
+    // CRITICAL CHECK: The ID returned by and2 must match the canonical ITE result.
+    EXPECT_EQ(and_ab_id, canonical_and_ab)
+        << "AND result must match the canonical ITE(a, b, False) node.";
 }
 
 // main function for tests (typically handled by main_test.cpp or gtest setup)
