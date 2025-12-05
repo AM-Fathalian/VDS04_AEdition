@@ -510,7 +510,7 @@ TEST_F(ManagerTest, FindVars_ReturnsAllVariables) {
 
     // The expected IDs are: 2 (a) and 3 (b). Total 2 variables.
     std::set<BDD_ID> vars;
-    manager.findNodes(and_ab_id, vars);
+    manager.findVars(and_ab_id, vars);
 
     // 1. Check size
     EXPECT_EQ(vars.size(), 2) << "Must find the 2 variables (a and b) used in the function.";
