@@ -120,12 +120,12 @@ namespace ClassProject {
     BDD_ID Manager::coFactorFalse(BDD_ID f){ return nodes[f].low; }
 
     BDD_ID Manager::and2(BDD_ID a, BDD_ID b) { return ite(a, b, FALSE_ID); }
-    BDD_ID Manager::or2(BDD_ID a, BDD_ID b)  { return 0; }
-    BDD_ID Manager::xor2(BDD_ID a, BDD_ID b) { return 0; }
+    BDD_ID Manager::or2(BDD_ID a, BDD_ID b)  { return neg(ite(neg(a), neg(b), FALSE_ID)); }
+    BDD_ID Manager::xor2(BDD_ID a, BDD_ID b) { return or2(and2(neg(a),b),and2(a,neg(b))); }
     BDD_ID Manager::neg(BDD_ID a)            { return ite(a, FALSE_ID, TRUE_ID); }
-    BDD_ID Manager::nand2(BDD_ID a, BDD_ID b){ return 0; }
-    BDD_ID Manager::nor2(BDD_ID a, BDD_ID b) { return 0; }
-    BDD_ID Manager::xnor2(BDD_ID a, BDD_ID b){ return 0; }
+    BDD_ID Manager::nand2(BDD_ID a, BDD_ID b){ return neg(and2(a, b)); }
+    BDD_ID Manager::nor2(BDD_ID a, BDD_ID b) { return neg(or2(a, b)); }
+    BDD_ID Manager::xnor2(BDD_ID a, BDD_ID b){ return neg(xor2(a, b)); }
 
     void Manager::findNodes(const BDD_ID &root, std::set<BDD_ID> &nodes_of_root) {
 
