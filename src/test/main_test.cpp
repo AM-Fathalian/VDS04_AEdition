@@ -369,6 +369,91 @@ TEST_F(ManagerTest, AND2) {
         << "AND result must match the canonical ITE(a, b, False) node.";
 }
 
+
+
+
+// --- Phase 4: Test Case 3 (OR) ---
+TEST_F(ManagerTest, OR2) {
+    std::cout << "\n--- Test_OR2 ---" << std::endl;
+    // SETUP: Create two variables
+    BDD_ID a_id = manager.createVar("a"); // ID 2
+    BDD_ID b_id = manager.createVar("b"); // ID 3
+
+
+
+    // Check Trivial OR
+    EXPECT_EQ(manager.or2(FALSE_ID, FALSE_ID), FALSE_ID) << "False OR False must be False.";
+    EXPECT_EQ(manager.or2(TRUE_ID, FALSE_ID), TRUE_ID) << "True OR False must be True.";;
+    EXPECT_EQ(manager.or2(FALSE_ID, TRUE_ID), TRUE_ID)<< "False OR True must be True.";;
+    EXPECT_EQ(manager.or2(TRUE_ID, TRUE_ID), TRUE_ID)<< "True OR True must be True.";;
+
+    // Check Variable OR
+    BDD_ID or_ab_id = manager.or2(a_id, b_id);
+    BDD_ID canonical_or_ab = manager.ite(a_id, TRUE_ID, b_id);
+
+    // CRITICAL CHECK: Must match the canonical ITE result.
+    EXPECT_EQ(or_ab_id, canonical_or_ab)<< "OR result must match the canonical ITE(a, True, b) node.";;
+}
+
+// --- Phase 4: Test Case 4 (XOR) ---
+TEST_F(ManagerTest, XOR2) {
+    std::cout << "\n--- Test_XOR2 ---" << std::endl;
+    // SETUP: Create two variables
+    BDD_ID a_id = manager.createVar("a"); // ID 2
+    BDD_ID b_id = manager.createVar("b"); // ID 3
+
+    EXPECT_EQ(manager.xor2(FALSE_ID, FALSE_ID), FALSE_ID) << "False XOR False must be False.";
+    EXPECT_EQ(manager.xor2(TRUE_ID, FALSE_ID), TRUE_ID) << "True XOR False must be True.";;
+    EXPECT_EQ(manager.xor2(FALSE_ID, TRUE_ID), TRUE_ID)<< "False XOR True must be True.";;
+    EXPECT_EQ(manager.xor2(TRUE_ID, TRUE_ID), FALSE_ID)<< "True XOR True must be False.";;
+
+
+    // Check Variable OR
+    BDD_ID xor_ab_id = manager.xor2(a_id, b_id);
+    BDD_ID canonical_xor_ab = manager.ite(a_id, manager.neg(b_id), b_id);
+
+    // CRITICAL CHECK: Must match the canonical ITE result.
+    EXPECT_EQ(xor_ab_id, canonical_xor_ab)<< "xOR result must match the canonical ITE(a, True, b) node.";;
+}
+
+// --- Phase 4: Test Case 5 (NAND, NOR, XNOR) ---
+TEST_F(ManagerTest, NAND2) {
+    // Note: These should be tested using combinations of the core functions.
+    BDD_ID a_id = manager.createVar("a");
+    BDD_ID b_id = manager.createVar("b");
+
+    // NAND (NOT AND)
+    std::cout << "\n--- Test_NAND2 ---" << std::endl;
+    BDD_ID nand_result = manager.nand2(a_id, b_id);
+    EXPECT_EQ(nand_result, manager.neg(manager.and2(a_id, b_id)));
+
+}
+
+TEST_F(ManagerTest, NOR2) {
+    // Note: These should be tested using combinations of the core functions.
+    BDD_ID a_id = manager.createVar("a");
+    BDD_ID b_id = manager.createVar("b");
+
+    // NOR (NOT OR)
+    std::cout << "\n--- Test_NOR2 ---" << std::endl;
+    BDD_ID nor_result = manager.nor2(a_id, b_id);
+    EXPECT_EQ(nor_result, manager.neg(manager.or2(a_id, b_id)));
+
+}
+
+
+TEST_F(ManagerTest, NXOR2) {
+    // Note: These should be tested using combinations of the core functions.
+    BDD_ID a_id = manager.createVar("a");
+    BDD_ID b_id = manager.createVar("b");
+
+    // XNOR (NOT XOR)
+    std::cout << "\n--- Test_XNOR2 ---" << std::endl;
+    BDD_ID xnor_result = manager.xnor2(a_id, b_id);
+    EXPECT_EQ(xnor_result, manager.neg(manager.xor2(a_id, b_id)));
+}
+
+
 // main function for tests (typically handled by main_test.cpp or gtest setup)
 int main(int argc, char **argv) {
     ::testing::InitGoogleTest(&argc, argv);
