@@ -442,7 +442,7 @@ TEST_F(ManagerTest, NOR2) {
 }
 
 
-TEST_F(ManagerTest, NXOR2) {
+TEST_F(ManagerTest, XNOR2) {
     // Note: These should be tested using combinations of the core functions.
     BDD_ID a_id = manager.createVar("a");
     BDD_ID b_id = manager.createVar("b");
@@ -453,6 +453,74 @@ TEST_F(ManagerTest, NXOR2) {
     EXPECT_EQ(xnor_result, manager.neg(manager.xor2(a_id, b_id)));
 }
 
+
+TEST_F(ManagerTest, CoFactor_SimpleReduction) {
+    std::cout << "\n--- Test_CofactorsSimpleReduction ---" << std::endl;
+    BDD_ID a_id = manager.createVar("a"); // ID 2
+    BDD_ID b_id = manager.createVar("b"); // ID 3
+
+    // Function F = a OR b (ITE(a, True, b))
+    BDD_ID f_id = manager.or2(a_id, b_id);
+
+    // 1. Co-Factor True w.r.t. 'a' (F_a = True)
+    // The result should be equivalent to: ITE(True, True, b) = True
+    BDD_ID f_a_true = manager.coFactorTrue(f_id, a_id);
+    EXPECT_EQ(f_a_true, TRUE_ID) << "CoFactorTrue(a OR b, a) must reduce to True.";
+
+    // 2. Co-Factor False w.r.t. 'a' (F_not_a = b)
+    // The result should be equivalent to: ITE(False, True, b) = b
+    BDD_ID f_a_false = manager.coFactorFalse(f_id, a_id);
+    EXPECT_EQ(f_a_false, b_id) << "CoFactorFalse(a OR b, a) must reduce to b.";
+
+    // 3. Test CoFactor without specifying variable (should use topVar)
+    // The topVar of F is 'a'.
+    EXPECT_EQ(manager.coFactorTrue(f_id), TRUE_ID) << "CoFactorTrue(F) must use topVar 'a'.";
+}
+
+
+// --- Phase 5: Test Case 2 (Find All Nodes) ---
+TEST_F(ManagerTest, FindNodes_ReturnsAllUniqueIDs) {
+    std::cout << "\n--- Test_FindNodes ---" << std::endl;
+    // SETUP: Create a complex BDD (e.g., F = a AND b)
+    BDD_ID a_id = manager.createVar("a"); // ID 2
+    BDD_ID b_id = manager.createVar("b"); // ID 3
+    BDD_ID and_ab_id = manager.and2(a_id, b_id); // ID 4
+
+    // The expected IDs are: 0 (False), 1 (True), 2 (a), 3 (b), 4 (a AND b). Total 5 nodes.
+    std::set<BDD_ID> nodes;
+    manager.findNodes(and_ab_id, nodes);
+
+    EXPECT_TRUE(nodes.count(and_ab_id));
+    EXPECT_TRUE(nodes.count(a_id));
+    EXPECT_TRUE(nodes.count(b_id));
+    EXPECT_TRUE(nodes.count(FALSE_ID));
+    EXPECT_TRUE(nodes.count(TRUE_ID)); // depending on representation
+
+    EXPECT_EQ(nodes.size(), 5) << "Must find all 5 unique nodes in the structure.";;
+
+}
+
+// --- Phase 5: Test Case 3 (Find All Variables) ---
+TEST_F(ManagerTest, FindVars_ReturnsAllVariables) {
+    std::cout << "\n--- Test_FindVars ---" << std::endl;
+    // SETUP: Use the same complex BDD (F = a AND b)
+    BDD_ID a_id = manager.createVar("a"); // ID 2
+    BDD_ID b_id = manager.createVar("b"); // ID 3
+    BDD_ID and_ab_id = manager.and2(a_id, b_id); // ID 4
+
+    // The expected IDs are: 2 (a) and 3 (b). Total 2 variables.
+    std::set<BDD_ID> vars;
+    manager.findNodes(and_ab_id, vars);
+
+    // 1. Check size
+    EXPECT_EQ(vars.size(), 2) << "Must find the 2 variables (a and b) used in the function.";
+
+    // 2. Check content
+    EXPECT_TRUE(vars.count(a_id));
+    EXPECT_TRUE(vars.count(b_id));
+    EXPECT_FALSE(vars.count(FALSE_ID)) << "Constants must not be included.";
+    EXPECT_FALSE(vars.count(and_ab_id)) << "Complex nodes must not be included.";
+}
 
 // main function for tests (typically handled by main_test.cpp or gtest setup)
 int main(int argc, char **argv) {
