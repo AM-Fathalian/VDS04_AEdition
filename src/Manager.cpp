@@ -47,33 +47,26 @@ namespace ClassProject {
         // For Recursive Cases
         BDD_ID topI = isConstant(i) ? 99 : topVar(i);
         BDD_ID topT = isConstant(t) ? 99 : topVar(t);
-        BDD_ID topE = isConstant(e) ? nodes.size() : topVar(e);
+        BDD_ID topE = isConstant(e) ? 99 : topVar(e);
 
         BDD_ID top = std::min({topI, topT, topE});
 
         // Calculate Cofactors
-        BDD_ID i_high;
-        BDD_ID i_low;
-        if (!isConstant(i) && topVar(i) == top) {
-            i_high = nodes[i].high;
-            i_low = nodes[i].low;
-        }
+        // Initialise with defaults
+        BDD_ID i_high = i, i_low = i;
+        BDD_ID t_high = t, t_low = t;
+        BDD_ID e_high = e, e_low = e;
 
-        BDD_ID t_high;
-        BDD_ID t_low;
-        if (!isConstant(t) && topVar(t) == top) {
-            t_high = nodes[t].high;
-            t_low = nodes[t].low;
-        }
+        // Using the coFactorTrue
+        i_high = coFactorTrue(i, top);
+        t_high = coFactorTrue(t, top);
+        e_high = coFactorTrue(e, top);
 
-        BDD_ID e_high;
-        BDD_ID e_low;
-        if (!isConstant(e) && topVar(e) == top) {
-            e_high = nodes[e].high;
-            e_low = nodes[e].low;
-        }
+        i_low = coFactorFalse(i, top);
+        t_low = coFactorFalse(t, top);
+        e_low = coFactorFalse(e, top);
 
-        // Recursion
+        // Recursion (highSuccessor & lowSuccessor)
         BDD_ID r_high = ite(i_high, t_high, e_high);
         BDD_ID r_low = ite(i_low, t_low, e_low);
 
@@ -94,15 +87,37 @@ namespace ClassProject {
     }
 
     BDD_ID Manager::coFactorTrue(BDD_ID f, BDD_ID x) {
-        return 0;
+        // Return Constant if f == constant
+        if (isConstant(f)) {
+            return f;
+        }
+
+        // Return highSuccessor if topVar matches
+        if (topVar(f) == x) {
+            return coFactorTrue(f);
+        }
+        // return the id of f if x != topVar
+        else
+            return f;
     }
 
     BDD_ID Manager::coFactorFalse(BDD_ID f, BDD_ID x) {
-        return 0;
+        // Return Constant if f == constant
+        if (isConstant(f)) {
+            return f;
+        }
+
+        // Return lowSuccessor if topVar matches
+        if (topVar(f) == x) {
+            return coFactorFalse(f);
+        }
+        // return the id of f if x != topVar
+        else
+            return f;
     }
 
-    BDD_ID Manager::coFactorTrue(BDD_ID f) { return 0; }
-    BDD_ID Manager::coFactorFalse(BDD_ID f){ return 0; }
+    BDD_ID Manager::coFactorTrue(BDD_ID f) { return nodes[f].high; }
+    BDD_ID Manager::coFactorFalse(BDD_ID f){ return nodes[f].low; }
 
     BDD_ID Manager::and2(BDD_ID a, BDD_ID b) { return 0; }
     BDD_ID Manager::or2(BDD_ID a, BDD_ID b)  { return 0; }
