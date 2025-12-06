@@ -491,10 +491,10 @@ TEST_F(ManagerTest, FindNodes_ReturnsAllUniqueIDs) {
     manager.findNodes(and_ab_id, nodes);
 
     EXPECT_TRUE(nodes.count(and_ab_id));
-    EXPECT_TRUE(nodes.count(a_id));
+    EXPECT_FALSE(nodes.count(a_id)) << "Node 'a' (ID 2) is the topVar, but not a successor, and should NOT be counted.";
     EXPECT_TRUE(nodes.count(b_id));
     EXPECT_TRUE(nodes.count(FALSE_ID));
-    EXPECT_FALSE(nodes.count(TRUE_ID)) << "Should NOT contain True (not reachable)";
+    EXPECT_TRUE(nodes.count(TRUE_ID));
 
     EXPECT_EQ(nodes.size(), 4) << "Must find all 4 unique nodes in the structure.";;
 
