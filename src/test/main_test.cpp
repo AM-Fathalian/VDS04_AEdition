@@ -486,7 +486,7 @@ TEST_F(ManagerTest, FindNodes_ReturnsAllUniqueIDs) {
     BDD_ID b_id = manager.createVar("b"); // ID 3
     BDD_ID and_ab_id = manager.and2(a_id, b_id); // ID 4
 
-    // The expected IDs are: 0 (False), 1 (True), 2 (a), 3 (b), 4 (a AND b). Total 5 nodes.
+    // The expected IDs are: 0 (False), 1 (True),  3 (b), 4 (a AND b). Total 4 nodes.
     std::set<BDD_ID> nodes;
     manager.findNodes(and_ab_id, nodes);
 
