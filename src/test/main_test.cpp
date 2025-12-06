@@ -486,15 +486,15 @@ TEST_F(ManagerTest, FindNodes_ReturnsAllUniqueIDs) {
     BDD_ID b_id = manager.createVar("b"); // ID 3
     BDD_ID and_ab_id = manager.and2(a_id, b_id); // ID 4
 
-    // The expected IDs are: 0 (False), 1 (True), 2 (a), 3 (b), 4 (a AND b). Total 5 nodes.
+    // The expected IDs are: 0 (False), 1 (True),  3 (b), 4 (a AND b). Total 4 nodes.
     std::set<BDD_ID> nodes;
     manager.findNodes(and_ab_id, nodes);
 
     EXPECT_TRUE(nodes.count(and_ab_id));
-    EXPECT_TRUE(nodes.count(a_id));
+    EXPECT_FALSE(nodes.count(a_id)) << "Node 'a' (ID 2) is the topVar, but not a successor, and should NOT be counted.";
     EXPECT_TRUE(nodes.count(b_id));
     EXPECT_TRUE(nodes.count(FALSE_ID));
-    EXPECT_FALSE(nodes.count(TRUE_ID)) << "Should NOT contain True (not reachable)";
+    EXPECT_TRUE(nodes.count(TRUE_ID));
 
     EXPECT_EQ(nodes.size(), 4) << "Must find all 4 unique nodes in the structure.";;
 
