@@ -87,7 +87,7 @@ namespace ClassProject {
     }
 
     BDD_ID Manager::coFactorTrue(BDD_ID f, BDD_ID x) {
-        // Return constant if f == constant
+        // Return Constant if f == constant
         if (isConstant(f)) {
             return f;
         }
