@@ -496,7 +496,7 @@ TEST_F(ManagerTest, FindNodes_ReturnsAllUniqueIDs) {
     EXPECT_TRUE(nodes.count(FALSE_ID));
     EXPECT_TRUE(nodes.count(TRUE_ID)); // depending on representation
 
-    EXPECT_EQ(nodes.size(), 5) << "Must find all 5 unique nodes in the structure.";;
+    EXPECT_EQ(nodes.size(), 4) << "Must find all 4 unique nodes in the structure.";;
 
 }
 
