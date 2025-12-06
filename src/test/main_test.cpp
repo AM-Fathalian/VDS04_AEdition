@@ -494,7 +494,7 @@ TEST_F(ManagerTest, FindNodes_ReturnsAllUniqueIDs) {
     EXPECT_TRUE(nodes.count(a_id));
     EXPECT_TRUE(nodes.count(b_id));
     EXPECT_TRUE(nodes.count(FALSE_ID));
-    EXPECT_TRUE(nodes.count(TRUE_ID)); // depending on representation
+    EXPECT_FALSE(nodes.count(TRUE_ID)) << "Should NOT contain True (not reachable)";
 
     EXPECT_EQ(nodes.size(), 4) << "Must find all 4 unique nodes in the structure.";;
 
