@@ -129,10 +129,40 @@ namespace ClassProject {
 
     void Manager::findNodes(const BDD_ID &root, std::set<BDD_ID> &nodes_of_root) {
 
+        // Check for UniqueIDs
+        if (nodes_of_root.find(root) != nodes_of_root.end()) return;
+
+        // Set: nodes are sorted in the ascending order by default
+        nodes_of_root.insert(root);
+
+        // Stops at the Terminal/Leaf nodes
+        if (isConstant(root)) {
+            return;
+        }
+
+        // Recursively check for reachable nodes by looking at successors
+       findNodes(nodes[root].high, nodes_of_root);
+       findNodes(nodes[root].low, nodes_of_root);
+
     }
 
     void Manager::findVars(const BDD_ID &root, std::set<BDD_ID> &vars_of_root) {
 
+        // Finding all reachable nodes using findNodes
+        std::set<BDD_ID> all_reachable_nodes;
+        findNodes(root, all_reachable_nodes);
+
+        // Extract the variables from those nodes
+        for (BDD_ID node_id : all_reachable_nodes) {
+
+            // Excluding Terminal/Leaf nodes
+            if (!isConstant(node_id)) {
+
+                BDD_ID var_id = topVar(node_id);
+
+                vars_of_root.insert(var_id);
+            }
+        }
     }
 
     void Manager::visualizeBDD(std::string filepath, BDD_ID &root) {}
