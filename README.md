@@ -19,7 +19,7 @@
   <h3 align="center">
   VDS Class Project
   <br />
-  Group #X
+  Group #04
   <br />
   Winter Semester 2025/2026
   </h3>
